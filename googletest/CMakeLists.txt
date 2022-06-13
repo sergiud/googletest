@@ -1,3 +1,4 @@
+set (CMAKE_CXX_VISIBILITY_PRESET default)
 ########################################################################
 # Note: CMake support is community-based. The maintainers do not use CMake
 # internally.
@@ -120,10 +121,20 @@ include_directories(${gtest_build_include_dirs})
 # Defines the gtest & gtest_main libraries.  User tests should link
 # with one of them.
 
+set (gtest_ALL_SRCS
+  src/gtest.cc
+  src/gtest-death-test.cc
+  src/gtest-filepath.cc
+  src/gtest-port.cc
+  src/gtest-printers.cc
+  src/gtest-test-part.cc
+  src/gtest-typed-test.cc
+)
+
 # Google Test libraries.  We build them using more strict warnings than what
 # are used for other targets, to ensure that gtest can be compiled by a user
 # aggressive about warnings.
-cxx_library(gtest "${cxx_strict}" src/gtest-all.cc)
+cxx_library(gtest "${cxx_strict}" ${gtest_ALL_SRCS})
 set_target_properties(gtest PROPERTIES VERSION ${GOOGLETEST_VERSION})
 cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
 set_target_properties(gtest_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
@@ -224,12 +235,12 @@ if (gtest_build_tests)
   # MSVC 7.1 does not support STL with exceptions disabled.
   if (NOT MSVC OR MSVC_VERSION GREATER 1310)
     cxx_library(gtest_no_exception "${cxx_no_exception}"
-      src/gtest-all.cc)
+      ${gtest_ALL_SRCS})
     cxx_library(gtest_main_no_exception "${cxx_no_exception}"
-      src/gtest-all.cc src/gtest_main.cc)
+      ${gtest_ALL_SRCS} src/gtest_main.cc)
   endif()
   cxx_library(gtest_main_no_rtti "${cxx_no_rtti}"
-    src/gtest-all.cc src/gtest_main.cc)
+    ${gtest_ALL_SRCS} src/gtest_main.cc)
 
   cxx_test_with_flags(gtest-death-test_ex_nocatch_test
     "${cxx_exception} -DGTEST_ENABLE_CATCH_EXCEPTIONS_=0"
@@ -242,7 +253,7 @@ if (gtest_build_tests)
     gtest_main_no_rtti test/gtest_unittest.cc)
 
   cxx_shared_library(gtest_dll "${cxx_default}"
-    src/gtest-all.cc src/gtest_main.cc)
+    ${gtest_ALL_SRCS} src/gtest_main.cc)
 
   cxx_executable_with_flags(gtest_dll_test_ "${cxx_default}"
     gtest_dll test/gtest_all_test.cc)

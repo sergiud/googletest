@@ -85,12 +85,24 @@ include_directories(${gmock_build_include_dirs})
 if (MSVC)
   cxx_library(gmock
               "${cxx_strict}"
-              "${gtest_dir}/src/gtest-all.cc"
+              ${gtest_dir}/src/gtest.cc
+              ${gtest_dir}/src/gtest-death-test.cc
+              ${gtest_dir}/src/gtest-filepath.cc
+              ${gtest_dir}/src/gtest-port.cc
+              ${gtest_dir}/src/gtest-printers.cc
+              ${gtest_dir}/src/gtest-test-part.cc
+              ${gtest_dir}/src/gtest-typed-test.cc
               src/gmock-all.cc)
 
   cxx_library(gmock_main
               "${cxx_strict}"
-              "${gtest_dir}/src/gtest-all.cc"
+              ${gtest_dir}/src/gtest.cc
+              ${gtest_dir}/src/gtest-death-test.cc
+              ${gtest_dir}/src/gtest-filepath.cc
+              ${gtest_dir}/src/gtest-port.cc
+              ${gtest_dir}/src/gtest-printers.cc
+              ${gtest_dir}/src/gtest-test-part.cc
+              ${gtest_dir}/src/gtest-typed-test.cc
               src/gmock-all.cc
               src/gmock_main.cc)
 else()
@@ -175,10 +187,24 @@ if (gmock_build_tests)
 
   if (MSVC)
     cxx_library(gmock_main_no_exception "${cxx_no_exception}"
-      "${gtest_dir}/src/gtest-all.cc" src/gmock-all.cc src/gmock_main.cc)
+      ${gtest_dir}/src/gtest.cc
+      ${gtest_dir}/src/gtest-death-test.cc
+      ${gtest_dir}/src/gtest-filepath.cc
+      ${gtest_dir}/src/gtest-port.cc
+      ${gtest_dir}/src/gtest-printers.cc
+      ${gtest_dir}/src/gtest-test-part.cc
+      ${gtest_dir}/src/gtest-typed-test.cc
+      src/gmock-all.cc src/gmock_main.cc)
 
     cxx_library(gmock_main_no_rtti "${cxx_no_rtti}"
-      "${gtest_dir}/src/gtest-all.cc" src/gmock-all.cc src/gmock_main.cc)
+      ${gtest_dir}/src/gtest.cc
+      ${gtest_dir}/src/gtest-death-test.cc
+      ${gtest_dir}/src/gtest-filepath.cc
+      ${gtest_dir}/src/gtest-port.cc
+      ${gtest_dir}/src/gtest-printers.cc
+      ${gtest_dir}/src/gtest-test-part.cc
+      ${gtest_dir}/src/gtest-typed-test.cc
+      src/gmock-all.cc src/gmock_main.cc)
 
   else()
     cxx_library(gmock_main_no_exception "${cxx_no_exception}" src/gmock_main.cc)
@@ -194,7 +220,14 @@ if (gmock_build_tests)
     gmock_main_no_rtti test/gmock-spec-builders_test.cc)
 
   cxx_shared_library(shared_gmock_main "${cxx_default}"
-    "${gtest_dir}/src/gtest-all.cc" src/gmock-all.cc src/gmock_main.cc)
+    ${gtest_dir}/src/gtest.cc
+    ${gtest_dir}/src/gtest-death-test.cc
+    ${gtest_dir}/src/gtest-filepath.cc
+    ${gtest_dir}/src/gtest-port.cc
+    ${gtest_dir}/src/gtest-printers.cc
+    ${gtest_dir}/src/gtest-test-part.cc
+    ${gtest_dir}/src/gtest-typed-test.cc
+    src/gmock-all.cc src/gmock_main.cc)
 
   # Tests that a binary can be built with Google Mock as a shared library.  On
   # some system configurations, it may not possible to run the binary without
