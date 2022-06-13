@@ -79,28 +79,35 @@ include_directories(${gmock_build_include_dirs})
 # Defines the gmock & gmock_main libraries. User tests should link
 # with one of them.
 
+add_library (gmock_internal OBJECT
+  src/gmock-cardinalities.cc
+  src/gmock-internal-utils.cc
+  src/gmock-matchers.cc
+  src/gmock-spec-builders.cc
+  src/gmock.cc
+)
+set_target_properties(gmock_internal PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(gmock_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,INCLUDE_DIRECTORIES>)
+target_compile_definitions(gmock_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,COMPILE_DEFINITIONS>)
+target_compile_options(gmock_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,COMPILE_OPTIONS>)
+target_compile_features(gmock_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,COMPILE_FEATURES>)
+
 # Google Mock libraries. We build them using more strict warnings than what
 # are used for other targets, to ensure that Google Mock can be compiled by
 # a user aggressive about warnings.
-if (MSVC)
-  cxx_library(gmock
-              "${cxx_strict}"
-              "${gtest_dir}/src/gtest-all.cc"
-              src/gmock-all.cc)
-
-  cxx_library(gmock_main
-              "${cxx_strict}"
-              "${gtest_dir}/src/gtest-all.cc"
-              src/gmock-all.cc
-              src/gmock_main.cc)
-else()
-  cxx_library(gmock "${cxx_strict}" src/gmock-all.cc)
-  target_link_libraries(gmock PUBLIC gtest)
-  set_target_properties(gmock PROPERTIES VERSION ${GOOGLETEST_VERSION})
-  cxx_library(gmock_main "${cxx_strict}" src/gmock_main.cc)
-  target_link_libraries(gmock_main PUBLIC gmock)
-  set_target_properties(gmock_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
-endif()
+cxx_library(gmock "${cxx_strict}"
+  $<TARGET_OBJECTS:gmock_internal>
+)
+target_link_libraries(gmock PUBLIC gtest)
+set_target_properties(gmock PROPERTIES VERSION ${GOOGLETEST_VERSION})
+set_target_properties(gmock PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
+cxx_library(gmock_main "${cxx_strict}" src/gmock_main.cc)
+target_link_libraries(gmock_main PUBLIC gmock)
+set_target_properties(gmock_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
 
 string(REPLACE ";" "$<SEMICOLON>" dirs "${gmock_build_include_dirs}")
 target_include_directories(gmock SYSTEM INTERFACE
@@ -165,28 +172,23 @@ if (gmock_build_tests)
   ############################################################
   # C++ tests built with non-standard compiler flags.
 
-  if (MSVC)
-    cxx_library(gmock_main_no_exception "${cxx_no_exception}"
-      "${gtest_dir}/src/gtest-all.cc" src/gmock-all.cc src/gmock_main.cc)
+  cxx_library(gmock_main_no_exception "${cxx_no_exception}" src/gmock_main.cc)
+  target_link_libraries(gmock_main_no_exception PRIVATE gmock)
 
-    cxx_library(gmock_main_no_rtti "${cxx_no_rtti}"
-      "${gtest_dir}/src/gtest-all.cc" src/gmock-all.cc src/gmock_main.cc)
+  cxx_library(gmock_main_no_rtti "${cxx_no_rtti}" src/gmock_main.cc)
+  target_link_libraries(gmock_main_no_rtti PRIVATE gmock)
 
-  else()
-    cxx_library(gmock_main_no_exception "${cxx_no_exception}" src/gmock_main.cc)
-    target_link_libraries(gmock_main_no_exception PUBLIC gmock)
-
-    cxx_library(gmock_main_no_rtti "${cxx_no_rtti}" src/gmock_main.cc)
-    target_link_libraries(gmock_main_no_rtti PUBLIC gmock)
-  endif()
   cxx_test_with_flags(gmock-more-actions_no_exception_test "${cxx_no_exception}"
     gmock_main_no_exception test/gmock-more-actions_test.cc)
+  target_link_libraries(gmock-more-actions_no_exception_test gmock)
 
   cxx_test_with_flags(gmock_no_rtti_test "${cxx_no_rtti}"
     gmock_main_no_rtti test/gmock-spec-builders_test.cc)
+  target_link_libraries(gmock_no_rtti_test gmock)
 
   cxx_shared_library(shared_gmock_main "${cxx_default}"
-    "${gtest_dir}/src/gtest-all.cc" src/gmock-all.cc src/gmock_main.cc)
+    src/gmock_main.cc)
+  target_link_libraries (shared_gmock_main PUBLIC gtest)
 
   # Tests that a binary can be built with Google Mock as a shared library. On
   # some system configurations, it may not possible to run the binary without
@@ -194,7 +196,8 @@ if (gmock_build_tests)
   # this binary. To get a more robust shared library coverage, configure with
   # -DBUILD_SHARED_LIBS=ON.
   cxx_executable_with_flags(shared_gmock_test_ "${cxx_default}"
-    shared_gmock_main test/gmock-spec-builders_test.cc)
+    shared_gmock_main test/gmock-spec-builders_test.cc
+    $<TARGET_OBJECTS:gmock_internal>)
   set_target_properties(shared_gmock_test_
     PROPERTIES
     COMPILE_DEFINITIONS "GTEST_LINKED_AS_SHARED_LIBRARY=1")
