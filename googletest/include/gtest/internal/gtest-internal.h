@@ -1355,7 +1355,7 @@ class NeverThrown {
     gtest_msg.value += " with description \"";                                 \
     gtest_msg.value += e.what();                                               \
     gtest_msg.value += "\".";                                                  \
-    goto GTEST_CONCAT_TOKEN_(gtest_label_testthrow_, __LINE__);                \
+    goto GTEST_CONCAT_TOKEN_(gtest_label_testthrow_, __LINE__); /* NOLINT(cppcoreguidelines-avoid-goto) */  \
   }
 
 #else  // GTEST_HAS_EXCEPTIONS
@@ -1378,13 +1378,13 @@ class NeverThrown {
       gtest_msg.value = "Expected: " #statement                             \
                         " throws an exception of type " #expected_exception \
                         ".\n  Actual: it throws a different type.";         \
-      goto GTEST_CONCAT_TOKEN_(gtest_label_testthrow_, __LINE__);           \
+      goto GTEST_CONCAT_TOKEN_(gtest_label_testthrow_, __LINE__); /* NOLINT(cppcoreguidelines-avoid-goto) */ \
     }                                                                       \
     if (!gtest_caught_expected) {                                           \
       gtest_msg.value = "Expected: " #statement                             \
                         " throws an exception of type " #expected_exception \
                         ".\n  Actual: it throws nothing.";                  \
-      goto GTEST_CONCAT_TOKEN_(gtest_label_testthrow_, __LINE__);           \
+      goto GTEST_CONCAT_TOKEN_(gtest_label_testthrow_, __LINE__); /* NOLINT(cppcoreguidelines-avoid-goto) */ \
     }                                                                       \
   } else /*NOLINT*/                                                         \
     GTEST_CONCAT_TOKEN_(gtest_label_testthrow_, __LINE__)                   \
@@ -1399,7 +1399,7 @@ class NeverThrown {
     gtest_msg.value += " with description \"";                    \
     gtest_msg.value += e.what();                                  \
     gtest_msg.value += "\".";                                     \
-    goto GTEST_CONCAT_TOKEN_(gtest_label_testnothrow_, __LINE__); \
+    goto GTEST_CONCAT_TOKEN_(gtest_label_testnothrow_, __LINE__); /* NOLINT(cppcoreguidelines-avoid-goto) */ \
   }
 
 #else  // GTEST_HAS_EXCEPTIONS
@@ -1417,7 +1417,7 @@ class NeverThrown {
     GTEST_TEST_NO_THROW_CATCH_STD_EXCEPTION_()                           \
     catch (...) {                                                        \
       gtest_msg.value = "it throws.";                                    \
-      goto GTEST_CONCAT_TOKEN_(gtest_label_testnothrow_, __LINE__);      \
+      goto GTEST_CONCAT_TOKEN_(gtest_label_testnothrow_, __LINE__); /* NOLINT(cppcoreguidelines-avoid-goto) */ \
     }                                                                    \
   } else                                                                 \
     GTEST_CONCAT_TOKEN_(gtest_label_testnothrow_, __LINE__)              \
@@ -1436,7 +1436,7 @@ class NeverThrown {
       gtest_caught_any = true;                                       \
     }                                                                \
     if (!gtest_caught_any) {                                         \
-      goto GTEST_CONCAT_TOKEN_(gtest_label_testanythrow_, __LINE__); \
+      goto GTEST_CONCAT_TOKEN_(gtest_label_testanythrow_, __LINE__); /* NOLINT(cppcoreguidelines-avoid-goto) */ \
     }                                                                \
   } else                                                             \
     GTEST_CONCAT_TOKEN_(gtest_label_testanythrow_, __LINE__)         \
@@ -1464,7 +1464,7 @@ class NeverThrown {
         gtest_fatal_failure_checker;                                \
     GTEST_SUPPRESS_UNREACHABLE_CODE_WARNING_BELOW_(statement);      \
     if (gtest_fatal_failure_checker.has_new_fatal_failure()) {      \
-      goto GTEST_CONCAT_TOKEN_(gtest_label_testnofatal_, __LINE__); \
+      goto GTEST_CONCAT_TOKEN_(gtest_label_testnofatal_, __LINE__); /* NOLINT(cppcoreguidelines-avoid-goto) */ \
     }                                                               \
   } else /* NOLINT */                                               \
     GTEST_CONCAT_TOKEN_(gtest_label_testnofatal_, __LINE__)         \
@@ -1475,7 +1475,7 @@ class NeverThrown {
 
 // Expands to the name of the class that implements the given test.
 #define GTEST_TEST_CLASS_NAME_(test_suite_name, test_name) \
-  test_suite_name##_##test_name##_Test
+  test_suite_name##_##test_name##_Test // NOLINT
 
 // Helper macro for defining tests.
 #define GTEST_TEST_(test_suite_name, test_name, parent_class, parent_id)       \
@@ -1514,7 +1514,7 @@ class NeverThrown {
               parent_class>::GetSetUpCaseOrSuite(__FILE__, __LINE__),          \
           ::testing::internal::SuiteApiResolver<                               \
               parent_class>::GetTearDownCaseOrSuite(__FILE__, __LINE__),       \
-          new ::testing::internal::TestFactoryImpl<GTEST_TEST_CLASS_NAME_(     \
+          new ::testing::internal::TestFactoryImpl<GTEST_TEST_CLASS_NAME_( /* NOLINT */ \
               test_suite_name, test_name)>);                                   \
   void GTEST_TEST_CLASS_NAME_(test_suite_name, test_name)::TestBody()
 
