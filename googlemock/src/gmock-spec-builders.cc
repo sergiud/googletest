@@ -67,7 +67,7 @@ namespace internal {
 
 // Protects the mock object registry (in class Mock), all function
 // mockers, and all expectations.
-GTEST_API_ GTEST_DEFINE_STATIC_MUTEX_(g_gmock_mutex);
+GTEST_DEFINE_STATIC_MUTEX_(g_gmock_mutex);
 
 // Logs a message including file and line number information.
 GTEST_API_ void LogWithLocation(testing::internal::LogSeverity severity,

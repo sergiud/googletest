@@ -125,8 +125,17 @@ add_library (gtest_internal OBJECT
   src/gtest-test-part.cc
   src/gtest-typed-test.cc
 )
+
 target_compile_definitions(gtest_internal PRIVATE gtest_EXPORTS)
 set_target_properties(gtest_internal PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(gtest_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,INCLUDE_DIRECTORIES>)
+target_compile_definitions(gtest_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,COMPILE_DEFINITIONS>)
+target_compile_options(gtest_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,COMPILE_OPTIONS>)
+target_compile_features(gtest_internal PRIVATE
+  $<TARGET_PROPERTY:gtest,COMPILE_FEATURES>)
 
 ########################################################################
 #
@@ -157,7 +166,9 @@ if(GTEST_HAS_ABSL)
   )
 endif()
 cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
+set_target_properties(gtest_main PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 set_target_properties(gtest_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
+target_link_libraries(gtest_main PUBLIC gtest)
 string(REPLACE ";" "$<SEMICOLON>" dirs "${gtest_build_include_dirs}")
 target_include_directories(gtest SYSTEM INTERFACE
   "$<BUILD_INTERFACE:${dirs}>"
@@ -168,8 +179,6 @@ target_include_directories(gtest_main SYSTEM INTERFACE
 if(CMAKE_SYSTEM_NAME MATCHES "QNX" AND CMAKE_SYSTEM_VERSION VERSION_GREATER_EQUAL 7.1)
   target_link_libraries(gtest PUBLIC regex)
 endif()
-
-target_link_libraries(gtest_main PUBLIC gtest)
 
 generate_export_header (gtest
   EXPORT_FILE_NAME ${gtest_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/gtest/gtest-export.h
@@ -259,8 +268,6 @@ if (gtest_build_tests)
   cxx_test(gtest_skip_in_environment_setup_test gtest_main)
   cxx_test(gtest_skip_test gtest_main)
 
-  target_sources(gtest_unittest PRIVATE $<TARGET_OBJECTS:gtest_internal>)
-
   ############################################################
   # C++ tests built with non-standard compiler flags.
 
@@ -270,9 +277,11 @@ if (gtest_build_tests)
       ${gtest_ALL_SRCS})
     cxx_library(gtest_main_no_exception "${cxx_no_exception}"
       ${gtest_ALL_SRCS} src/gtest_main.cc)
+    set_target_properties(gtest_main_no_exception PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
   endif()
   cxx_library(gtest_main_no_rtti "${cxx_no_rtti}"
     ${gtest_ALL_SRCS} src/gtest_main.cc)
+  set_target_properties(gtest_main_no_rtti PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 
   cxx_test_with_flags(gtest-death-test_ex_nocatch_test
     "${cxx_exception} -DGTEST_ENABLE_CATCH_EXCEPTIONS_=0"
@@ -283,14 +292,13 @@ if (gtest_build_tests)
 
   cxx_test_with_flags(gtest_no_rtti_unittest "${cxx_no_rtti}"
     gtest_main_no_rtti test/gtest_unittest.cc)
-  target_sources(gtest_no_rtti_unittest PRIVATE $<TARGET_OBJECTS:gtest_internal>)
 
   cxx_shared_library(gtest_dll "${cxx_default}"
     ${gtest_ALL_SRCS} src/gtest_main.cc)
+  set_target_properties(gtest_dll PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 
   cxx_executable_with_flags(gtest_dll_test_ "${cxx_default}"
     gtest_dll test/gtest_all_test.cc)
-  target_sources(gtest_dll_test_ PRIVATE $<TARGET_OBJECTS:gtest_internal>)
   set_target_properties(gtest_dll_test_
                         PROPERTIES
                         COMPILE_DEFINITIONS "GTEST_LINKED_AS_SHARED_LIBRARY=1")
@@ -330,7 +338,6 @@ if (gtest_build_tests)
   py_test(googletest-filter-unittest)
 
   cxx_executable(gtest_help_test_ test gtest_main)
-  target_sources(gtest_help_test_ PRIVATE $<TARGET_OBJECTS:gtest_internal>)
   py_test(gtest_help_test)
 
   cxx_executable(googletest-list-tests-unittest_ test gtest)
