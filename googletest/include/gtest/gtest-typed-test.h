@@ -188,6 +188,7 @@ INSTANTIATE_TYPED_TEST_SUITE_P(My, FooTest, MyTypes);
 #define GTEST_NAME_GENERATOR_(TestSuiteName) \
   gtest_type_params_##TestSuiteName##_NameGenerator
 
+// NOLINTNEXTLINE(clang-diagnostic-gnu-zero-variadic-macro-arguments)
 #define TYPED_TEST_SUITE(CaseName, Types, ...)                          \
   typedef ::testing::internal::GenerateTypeList<Types>::type            \
       GTEST_TYPE_PARAMS_(CaseName);                                     \
