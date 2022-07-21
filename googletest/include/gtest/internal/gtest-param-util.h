@@ -86,8 +86,8 @@ namespace internal {
 // fixture class for the same test suite. This may happen when
 // TEST_P macro is used to define two tests with the same name
 // but in different namespaces.
-GTEST_API_ void ReportInvalidTestSuiteType(const char* test_suite_name,
-                                           const CodeLocation& code_location);
+GTEST_EXPORT void ReportInvalidTestSuiteType(const char* test_suite_name,
+                                             const CodeLocation& code_location);
 
 template <typename>
 class ParamGeneratorInterface;
@@ -488,12 +488,13 @@ class ParameterizedTestSuiteInfoBase {
 //
 // Report a the name of a test_suit as safe to ignore
 // as the side effect of construction of this type.
-struct GTEST_API_ MarkAsIgnored {
+struct GTEST_EXPORT MarkAsIgnored {
   explicit MarkAsIgnored(const char* test_suite);
 };
 
-GTEST_API_ void InsertSyntheticTestCase(const std::string& name,
-                                        CodeLocation location, bool has_test_p);
+GTEST_EXPORT void InsertSyntheticTestCase(const std::string& name,
+                                          CodeLocation location,
+                                          bool has_test_p);
 
 // INTERNAL IMPLEMENTATION - DO NOT USE IN USER CODE.
 //

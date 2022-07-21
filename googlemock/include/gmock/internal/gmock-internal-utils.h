@@ -63,14 +63,14 @@ GTEST_DISABLE_MSC_WARNINGS_PUSH_(4100 4805)
 
 // Joins a vector of strings as if they are fields of a tuple; returns
 // the joined string.
-GTEST_API_ std::string JoinAsKeyValueTuple(
+GMOCK_EXPORT std::string JoinAsKeyValueTuple(
     const std::vector<const char*>& names, const Strings& values);
 
 // Converts an identifier name to a space-separated list of lower-case
 // words.  Each maximum substring of the form [A-Za-z][a-z]*|\d+ is
 // treated as one word.  For example, both "FooBar123" and
 // "foo_bar_123" are converted to "foo bar 123".
-GTEST_API_ std::string ConvertIdentifierNameToWords(const char* id_name);
+GMOCK_EXPORT std::string ConvertIdentifierNameToWords(const char* id_name);
 
 // GetRawPointer(p) returns the raw pointer underlying p when p is a
 // smart pointer, or returns p itself when p is already a raw pointer.
@@ -233,7 +233,7 @@ class FailureReporterInterface {
 };
 
 // Returns the failure reporter used by Google Mock.
-GTEST_API_ FailureReporterInterface* GetFailureReporter();
+GMOCK_EXPORT FailureReporterInterface* GetFailureReporter();
 
 // Asserts that condition is true; aborts the process with the given
 // message if condition is false.  We cannot use LOG(FATAL) or CHECK()
@@ -278,7 +278,7 @@ const char kErrorVerbosity[] = "error";
 
 // Returns true if and only if a log with the given severity is visible
 // according to the --gmock_verbose flag.
-GTEST_API_ bool LogIsVisible(LogSeverity severity);
+GMOCK_EXPORT bool LogIsVisible(LogSeverity severity);
 
 // Prints the given message to stdout if and only if 'severity' >= the level
 // specified by the --gmock_verbose flag.  If stack_frames_to_skip >=
@@ -287,8 +287,8 @@ GTEST_API_ bool LogIsVisible(LogSeverity severity);
 // stack_frames_to_skip is treated as 0, since we don't know which
 // function calls will be inlined by the compiler and need to be
 // conservative.
-GTEST_API_ void Log(LogSeverity severity, const std::string& message,
-                    int stack_frames_to_skip);
+GMOCK_EXPORT void Log(LogSeverity severity, const std::string& message,
+                      int stack_frames_to_skip);
 
 // A marker class that is used to resolve parameterless expectations to the
 // correct overload. This must not be instantiable, to prevent client code from
@@ -299,11 +299,11 @@ GTEST_API_ void Log(LogSeverity severity, const std::string& message,
 class WithoutMatchers {
  private:
   WithoutMatchers() = default;
-  friend GTEST_API_ WithoutMatchers GetWithoutMatchers();
+  friend GMOCK_EXPORT WithoutMatchers GetWithoutMatchers();
 };
 
 // Internal use only: access the singleton instance of WithoutMatchers.
-GTEST_API_ WithoutMatchers GetWithoutMatchers();
+GMOCK_EXPORT WithoutMatchers GetWithoutMatchers();
 
 // Invalid<T>() is usable as an expression of type T, but will terminate
 // the program with an assertion failure if actually run.  This is useful
@@ -418,7 +418,7 @@ struct RemoveConstFromKey<std::pair<const K, V> > {
 
 // Emit an assertion failure due to incorrect DoDefault() usage. Out-of-lined to
 // reduce code size.
-GTEST_API_ void IllegalDoDefault(const char* file, int line);
+GMOCK_EXPORT void IllegalDoDefault(const char* file, int line);
 
 template <typename F, typename Tuple, size_t... Idx>
 auto ApplyImpl(F&& f, Tuple&& args, std::index_sequence<Idx...>)

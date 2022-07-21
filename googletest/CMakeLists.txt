@@ -171,8 +171,14 @@ endif()
 
 generate_export_header (gtest
   EXPORT_FILE_NAME ${gtest_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/gtest/gtest-export.h
-  EXPORT_MACRO_NAME GTEST_API_
 )
+
+generate_export_header (gtest_main
+  EXPORT_FILE_NAME
+  ${gtest_BINARY_DIR}/gtest_main/gtest_main-export.h
+)
+
+target_include_directories (gtest_main PRIVATE ${gtest_BINARY_DIR})
 
 target_include_directories (gtest PUBLIC
   $<BUILD_INTERFACE:${gtest_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
@@ -266,11 +272,13 @@ if (gtest_build_tests)
       ${gtest_ALL_SRCS})
     cxx_library(gtest_main_no_exception "${cxx_no_exception}"
       ${gtest_ALL_SRCS} src/gtest_main.cc)
-    set_target_properties(gtest_main_no_exception PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
+    set_target_properties(gtest_main_no_exception PROPERTIES DEFINE_SYMBOL gtest_main_EXPORTS)
+    target_include_directories (gtest_main_no_exception PRIVATE ${gtest_BINARY_DIR})
   endif()
   cxx_library(gtest_main_no_rtti "${cxx_no_rtti}"
     ${gtest_ALL_SRCS} src/gtest_main.cc $<TARGET_OBJECTS:gtest_internal>)
-  set_target_properties(gtest_main_no_rtti PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
+  set_target_properties(gtest_main_no_rtti PROPERTIES DEFINE_SYMBOL gtest_main_EXPORTS)
+  target_include_directories (gtest_main_no_rtti PRIVATE ${gtest_BINARY_DIR})
 
   cxx_test_with_flags(gtest-death-test_ex_nocatch_test
     "${cxx_exception} -DGTEST_ENABLE_CATCH_EXCEPTIONS_=0"
@@ -284,7 +292,8 @@ if (gtest_build_tests)
 
   cxx_shared_library(gtest_dll "${cxx_default}"
     ${gtest_ALL_SRCS} src/gtest_main.cc)
-  set_target_properties(gtest_dll PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
+  set_target_properties(gtest_dll PROPERTIES DEFINE_SYMBOL gtest_main_EXPORTS)
+  target_include_directories (gtest_dll PRIVATE ${gtest_BINARY_DIR})
 
   cxx_executable_with_flags(gtest_dll_test_ "${cxx_default}"
     gtest_dll test/gtest_all_test.cc $<TARGET_OBJECTS:gtest_internal>)

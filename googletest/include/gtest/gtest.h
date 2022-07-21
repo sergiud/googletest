@@ -239,7 +239,7 @@ class UnitTest;
 //   TEST_F(FooTest, Baz) { ... }
 //
 // Test is not copyable.
-class GTEST_API_ Test {
+class GTEST_EXPORT Test {
  public:
   friend class TestInfo;
 
@@ -396,7 +396,7 @@ class TestProperty {
 // the Test.
 //
 // TestResult is not copyable.
-class GTEST_API_ TestResult {
+class GTEST_EXPORT TestResult {
  public:
   // Creates an empty TestResult.
   TestResult();
@@ -530,7 +530,7 @@ class GTEST_API_ TestResult {
 // The constructor of TestInfo registers itself with the UnitTest
 // singleton such that the RUN_ALL_TESTS() macro knows which tests to
 // run.
-class GTEST_API_ TestInfo {
+class GTEST_EXPORT TestInfo {
  public:
   // Destructs a TestInfo object.  This function is not virtual, so
   // don't inherit from TestInfo.
@@ -669,7 +669,7 @@ class GTEST_API_ TestInfo {
 // A test suite, which consists of a vector of TestInfos.
 //
 // TestSuite is not copyable.
-class GTEST_API_ TestSuite {
+class GTEST_EXPORT TestSuite {
  public:
   // Creates a TestSuite with the given name.
   //
@@ -911,7 +911,7 @@ class Environment {
 #if GTEST_HAS_EXCEPTIONS
 
 // Exception which can be thrown from TestEventListener::OnTestPartResult.
-class GTEST_API_ AssertionException
+class GTEST_EXPORT AssertionException
     : public internal::GoogleTestFailureException {
  public:
   explicit AssertionException(const TestPartResult& result)
@@ -1019,7 +1019,7 @@ class EmptyTestEventListener : public TestEventListener {
 };
 
 // TestEventListeners lets users add listeners to track events in Google Test.
-class GTEST_API_ TestEventListeners {
+class GTEST_EXPORT TestEventListeners {
  public:
   TestEventListeners();
   ~TestEventListeners();
@@ -1110,7 +1110,7 @@ class GTEST_API_ TestEventListeners {
 //
 // This class is thread-safe as long as the methods are called
 // according to their specification.
-class GTEST_API_ UnitTest {
+class GTEST_EXPORT UnitTest {
  public:
   // Gets the singleton UnitTest object.  The first time this method
   // is called, a UnitTest object is constructed and returned.
@@ -1355,15 +1355,15 @@ inline Environment* AddGlobalTestEnvironment(Environment* env) {
 // updated.
 //
 // Calling the function for the second time has no user-visible effect.
-GTEST_API_ void InitGoogleTest(int* argc, char** argv);
+GTEST_EXPORT void InitGoogleTest(int* argc, char** argv);
 
 // This overloaded version can be used in Windows programs compiled in
 // UNICODE mode.
-GTEST_API_ void InitGoogleTest(int* argc, wchar_t** argv);
+GTEST_EXPORT void InitGoogleTest(int* argc, wchar_t** argv);
 
 // This overloaded version can be used on Arduino/embedded platforms where
 // there is no argc/argv.
-GTEST_API_ void InitGoogleTest();
+GTEST_EXPORT void InitGoogleTest();
 
 namespace internal {
 
@@ -1484,44 +1484,46 @@ GTEST_IMPL_CMP_HELPER_(GT, >)
 // The helper function for {ASSERT|EXPECT}_STREQ.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-GTEST_API_ AssertionResult CmpHelperSTREQ(const char* s1_expression,
-                                          const char* s2_expression,
-                                          const char* s1, const char* s2);
+GTEST_EXPORT AssertionResult CmpHelperSTREQ(const char* s1_expression,
+                                            const char* s2_expression,
+                                            const char* s1, const char* s2);
 
 // The helper function for {ASSERT|EXPECT}_STRCASEEQ.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-GTEST_API_ AssertionResult CmpHelperSTRCASEEQ(const char* s1_expression,
-                                              const char* s2_expression,
-                                              const char* s1, const char* s2);
+GTEST_EXPORT AssertionResult CmpHelperSTRCASEEQ(const char* s1_expression,
+                                                const char* s2_expression,
+                                                const char* s1, const char* s2);
 
 // The helper function for {ASSERT|EXPECT}_STRNE.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-GTEST_API_ AssertionResult CmpHelperSTRNE(const char* s1_expression,
-                                          const char* s2_expression,
-                                          const char* s1, const char* s2);
+GTEST_EXPORT AssertionResult CmpHelperSTRNE(const char* s1_expression,
+                                            const char* s2_expression,
+                                            const char* s1, const char* s2);
 
 // The helper function for {ASSERT|EXPECT}_STRCASENE.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-GTEST_API_ AssertionResult CmpHelperSTRCASENE(const char* s1_expression,
-                                              const char* s2_expression,
-                                              const char* s1, const char* s2);
+GTEST_EXPORT AssertionResult CmpHelperSTRCASENE(const char* s1_expression,
+                                                const char* s2_expression,
+                                                const char* s1, const char* s2);
 
 // Helper function for *_STREQ on wide strings.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-GTEST_API_ AssertionResult CmpHelperSTREQ(const char* s1_expression,
-                                          const char* s2_expression,
-                                          const wchar_t* s1, const wchar_t* s2);
+GTEST_EXPORT AssertionResult CmpHelperSTREQ(const char* s1_expression,
+                                            const char* s2_expression,
+                                            const wchar_t* s1,
+                                            const wchar_t* s2);
 
 // Helper function for *_STRNE on wide strings.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-GTEST_API_ AssertionResult CmpHelperSTRNE(const char* s1_expression,
-                                          const char* s2_expression,
-                                          const wchar_t* s1, const wchar_t* s2);
+GTEST_EXPORT AssertionResult CmpHelperSTRNE(const char* s1_expression,
+                                            const char* s2_expression,
+                                            const wchar_t* s1,
+                                            const wchar_t* s2);
 
 }  // namespace internal
 
@@ -1533,40 +1535,40 @@ GTEST_API_ AssertionResult CmpHelperSTRNE(const char* s1_expression,
 //
 // The {needle,haystack}_expr arguments are the stringified
 // expressions that generated the two real arguments.
-GTEST_API_ AssertionResult IsSubstring(const char* needle_expr,
-                                       const char* haystack_expr,
-                                       const char* needle,
-                                       const char* haystack);
-GTEST_API_ AssertionResult IsSubstring(const char* needle_expr,
-                                       const char* haystack_expr,
-                                       const wchar_t* needle,
-                                       const wchar_t* haystack);
-GTEST_API_ AssertionResult IsNotSubstring(const char* needle_expr,
-                                          const char* haystack_expr,
-                                          const char* needle,
-                                          const char* haystack);
-GTEST_API_ AssertionResult IsNotSubstring(const char* needle_expr,
-                                          const char* haystack_expr,
-                                          const wchar_t* needle,
-                                          const wchar_t* haystack);
-GTEST_API_ AssertionResult IsSubstring(const char* needle_expr,
-                                       const char* haystack_expr,
-                                       const ::std::string& needle,
-                                       const ::std::string& haystack);
-GTEST_API_ AssertionResult IsNotSubstring(const char* needle_expr,
-                                          const char* haystack_expr,
-                                          const ::std::string& needle,
-                                          const ::std::string& haystack);
+GTEST_EXPORT AssertionResult IsSubstring(const char* needle_expr,
+                                         const char* haystack_expr,
+                                         const char* needle,
+                                         const char* haystack);
+GTEST_EXPORT AssertionResult IsSubstring(const char* needle_expr,
+                                         const char* haystack_expr,
+                                         const wchar_t* needle,
+                                         const wchar_t* haystack);
+GTEST_EXPORT AssertionResult IsNotSubstring(const char* needle_expr,
+                                            const char* haystack_expr,
+                                            const char* needle,
+                                            const char* haystack);
+GTEST_EXPORT AssertionResult IsNotSubstring(const char* needle_expr,
+                                            const char* haystack_expr,
+                                            const wchar_t* needle,
+                                            const wchar_t* haystack);
+GTEST_EXPORT AssertionResult IsSubstring(const char* needle_expr,
+                                         const char* haystack_expr,
+                                         const ::std::string& needle,
+                                         const ::std::string& haystack);
+GTEST_EXPORT AssertionResult IsNotSubstring(const char* needle_expr,
+                                            const char* haystack_expr,
+                                            const ::std::string& needle,
+                                            const ::std::string& haystack);
 
 #if GTEST_HAS_STD_WSTRING
-GTEST_API_ AssertionResult IsSubstring(const char* needle_expr,
-                                       const char* haystack_expr,
-                                       const ::std::wstring& needle,
-                                       const ::std::wstring& haystack);
-GTEST_API_ AssertionResult IsNotSubstring(const char* needle_expr,
-                                          const char* haystack_expr,
-                                          const ::std::wstring& needle,
-                                          const ::std::wstring& haystack);
+GTEST_EXPORT AssertionResult IsSubstring(const char* needle_expr,
+                                         const char* haystack_expr,
+                                         const ::std::wstring& needle,
+                                         const ::std::wstring& haystack);
+GTEST_EXPORT AssertionResult IsNotSubstring(const char* needle_expr,
+                                            const char* haystack_expr,
+                                            const ::std::wstring& needle,
+                                            const ::std::wstring& haystack);
 #endif  // GTEST_HAS_STD_WSTRING
 
 namespace internal {
@@ -1604,17 +1606,17 @@ AssertionResult CmpHelperFloatingPointEQ(const char* lhs_expression,
 // Helper function for implementing ASSERT_NEAR.
 //
 // INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
-GTEST_API_ AssertionResult DoubleNearPredFormat(const char* expr1,
-                                                const char* expr2,
-                                                const char* abs_error_expr,
-                                                double val1, double val2,
-                                                double abs_error);
+GTEST_EXPORT AssertionResult DoubleNearPredFormat(const char* expr1,
+                                                  const char* expr2,
+                                                  const char* abs_error_expr,
+                                                  double val1, double val2,
+                                                  double abs_error);
 
 using GoogleTest_NotSupported_OnFunctionReturningNonVoid = void;
 
 // INTERNAL IMPLEMENTATION - DO NOT USE IN USER CODE.
 // A class that enables one to stream messages to assertion macros
-class GTEST_API_ AssertHelper {
+class GTEST_EXPORT AssertHelper {
  public:
   // Constructor.
   AssertHelper(TestPartResult::Type type, const char* file, int line,
@@ -2016,10 +2018,10 @@ class TestWithParam : public Test, public WithParamInterface<T> {};
 
 // Asserts that val1 is less than, or almost equal to, val2.  Fails
 // otherwise.  In particular, it fails if either val1 or val2 is NaN.
-GTEST_API_ AssertionResult FloatLE(const char* expr1, const char* expr2,
-                                   float val1, float val2);
-GTEST_API_ AssertionResult DoubleLE(const char* expr1, const char* expr2,
-                                    double val1, double val2);
+GTEST_EXPORT AssertionResult FloatLE(const char* expr1, const char* expr2,
+                                     float val1, float val2);
+GTEST_EXPORT AssertionResult DoubleLE(const char* expr1, const char* expr2,
+                                      double val1, double val2);
 
 #ifdef GTEST_OS_WINDOWS
 
@@ -2071,7 +2073,7 @@ GTEST_API_ AssertionResult DoubleLE(const char* expr1, const char* expr2,
 // Example:
 //   testing::ScopedTrace trace("file.cc", 123, "message");
 //
-class GTEST_API_ ScopedTrace {
+class GTEST_EXPORT ScopedTrace {
  public:
   // The c'tor pushes the given source file location and message onto
   // a trace stack maintained by Google Test.
@@ -2230,7 +2232,7 @@ constexpr bool StaticAssertTypeEq() noexcept {
 // Returns a path to a temporary directory, which should be writable. It is
 // implementation-dependent whether or not the path is terminated by the
 // directory-separator character.
-GTEST_API_ std::string TempDir();
+GTEST_EXPORT std::string TempDir();
 
 // Returns a path to a directory that contains ancillary data files that might
 // be used by tests. It is implementation dependent whether or not the path is

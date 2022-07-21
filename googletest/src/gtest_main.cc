@@ -30,6 +30,7 @@
 #include <cstdio>
 
 #include "gtest/gtest.h"
+#include "gtest_main/gtest_main-export.h"
 
 #if defined(GTEST_OS_ESP8266) || defined(GTEST_OS_ESP32) || \
     (defined(GTEST_OS_NRF52) && defined(ARDUINO))
@@ -58,7 +59,7 @@ GTEST_API_ int main() {
 #else
 // Normal platforms: program entry point is main, argc/argv are initialized.
 
-GTEST_API_ int main(int argc, char **argv) {
+GTEST_MAIN_EXPORT int main(int argc, char **argv) {
   printf("Running main() from %s\n", __FILE__);
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

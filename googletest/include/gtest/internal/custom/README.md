@@ -36,7 +36,7 @@ The following macros can be defined:
 
 ### Exporting API symbols:
 
-*   `GTEST_API_` - Specifier for exported symbols.
+*   `GTEST_EXPORT` - Specifier for exported symbols.
 
 ## Header `gtest-printers.h`
 

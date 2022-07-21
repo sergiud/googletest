@@ -137,7 +137,7 @@ namespace testing {
 class [[nodiscard]] AssertionResult;
 #endif  // !SWIG
 
-class GTEST_API_ AssertionResult {
+class GTEST_EXPORT AssertionResult {
  public:
   // Copy constructor.
   // Used in EXPECT_TRUE/FALSE(assertion_result).
@@ -228,14 +228,14 @@ class GTEST_API_ AssertionResult {
 };
 
 // Makes a successful assertion result.
-GTEST_API_ AssertionResult AssertionSuccess();
+GTEST_EXPORT AssertionResult AssertionSuccess();
 
 // Makes a failed assertion result.
-GTEST_API_ AssertionResult AssertionFailure();
+GTEST_EXPORT AssertionResult AssertionFailure();
 
 // Makes a failed assertion result with the given failure message.
 // Deprecated; use AssertionFailure() << msg.
-GTEST_API_ AssertionResult AssertionFailure(const Message& msg);
+GTEST_EXPORT AssertionResult AssertionFailure(const Message& msg);
 
 }  // namespace testing
 

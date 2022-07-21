@@ -132,12 +132,12 @@ class NaggyMockImpl;
 // expectations when InSequence() is used, and thus affect which
 // expectation gets picked.  Therefore, we sequence all mock function
 // calls to ensure the integrity of the mock objects' states.
-GTEST_API_ GTEST_DECLARE_STATIC_MUTEX_(g_gmock_mutex);
+GMOCK_EXPORT GTEST_DECLARE_STATIC_MUTEX_(g_gmock_mutex);
 
 // Abstract base class of FunctionMocker.  This is the
 // type-agnostic part of the function mocker interface.  Its pure
 // virtual methods are implemented by FunctionMocker.
-class GTEST_API_ UntypedFunctionMockerBase {
+class GMOCK_EXPORT UntypedFunctionMockerBase {
  public:
   UntypedFunctionMockerBase();
   virtual ~UntypedFunctionMockerBase();
@@ -361,7 +361,7 @@ enum CallReaction {
 }  // namespace internal
 
 // Utilities for manipulating mock objects.
-class GTEST_API_ Mock {
+class GMOCK_EXPORT Mock {
  public:
   // The following public methods can be called concurrently.
 
@@ -478,7 +478,7 @@ class GTEST_API_ Mock {
 //     be modified, but the mutable methods of the ExpectationBase
 //     object it references can be called via expectation_base().
 
-class GTEST_API_ Expectation {
+class GMOCK_EXPORT Expectation {
  public:
   // Constructs a null object that doesn't reference any expectation.
   Expectation();
@@ -612,7 +612,7 @@ class ExpectationSet {
 // Sequence objects are used by a user to specify the relative order
 // in which the expectations should match.  They are copyable (we rely
 // on the compiler-defined copy constructor and assignment operator).
-class GTEST_API_ Sequence {
+class GMOCK_EXPORT Sequence {
  public:
   // Constructs an empty sequence.
   Sequence() : last_expectation_(new Expectation) {}
@@ -650,7 +650,7 @@ class GTEST_API_ Sequence {
 // thread.  However, for clarity of your tests we recommend you to set
 // up mocks in the main thread unless you have a good reason not to do
 // so.
-class GTEST_API_ InSequence {
+class GMOCK_EXPORT InSequence {
  public:
   InSequence();
   ~InSequence();
@@ -666,7 +666,7 @@ namespace internal {
 
 // Points to the implicit sequence introduced by a living InSequence
 // object (if any) in the current thread or NULL.
-GTEST_API_ extern ThreadLocal<Sequence*> g_gmock_implicit_sequence;
+GMOCK_EXPORT extern ThreadLocal<Sequence*> g_gmock_implicit_sequence;
 
 // Base class for implementing expectations.
 //
@@ -682,7 +682,7 @@ GTEST_API_ extern ThreadLocal<Sequence*> g_gmock_implicit_sequence;
 //   on the template argument of Expectation to the base class.
 //
 // This class is internal and mustn't be used by user code directly.
-class GTEST_API_ ExpectationBase {
+class GMOCK_EXPORT ExpectationBase {
  public:
   // source_text is the EXPECT_CALL(...) source that created this Expectation.
   ExpectationBase(const char* file, int line, const std::string& source_text);
@@ -1274,9 +1274,9 @@ class TypedExpectation<R(Args...)> : public ExpectationBase {
 // ::testing::internal and import it into ::testing.
 
 // Logs a message including file and line number information.
-GTEST_API_ void LogWithLocation(testing::internal::LogSeverity severity,
-                                const char* file, int line,
-                                const std::string& message);
+GMOCK_EXPORT void LogWithLocation(testing::internal::LogSeverity severity,
+                                  const char* file, int line,
+                                  const std::string& message);
 
 template <typename F>
 class MockSpec {
@@ -1386,8 +1386,8 @@ void PrintAsActionResult(const T& result, std::ostream& os) {
 
 // Reports an uninteresting call (whose description is in msg) in the
 // manner specified by 'reaction'.
-GTEST_API_ void ReportUninterestingCall(CallReaction reaction,
-                                        const std::string& msg);
+GMOCK_EXPORT void ReportUninterestingCall(CallReaction reaction,
+                                          const std::string& msg);
 
 // A generic RAII type that runs a user-provided function in its destructor.
 class Cleanup final {

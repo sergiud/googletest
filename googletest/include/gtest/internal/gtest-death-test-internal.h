@@ -96,7 +96,7 @@ GTEST_DISABLE_MSC_WARNINGS_PUSH_(4251 \
 //               by wait(2)
 // exit code:    The integer code passed to exit(3), _Exit(2), or
 //               returned from main()
-class GTEST_API_ DeathTest {
+class GTEST_EXPORT DeathTest {
  public:
   // Create returns false if there was an error determining the
   // appropriate action to take for the current death test; for example,
@@ -189,7 +189,7 @@ class DefaultDeathTestFactory : public DeathTestFactory {
 
 // Returns true if exit_status describes a process that was terminated
 // by a signal, or exited normally with a nonzero exit code.
-GTEST_API_ bool ExitedUnsuccessfully(int exit_status);
+GTEST_EXPORT bool ExitedUnsuccessfully(int exit_status);
 
 // Traps C++ exceptions escaping statement and reports them as test
 // failures. Note that trapping SEH exceptions is not implemented here.

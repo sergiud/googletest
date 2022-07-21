@@ -30,6 +30,7 @@
 #include <iostream>
 
 #include "gmock/gmock.h"
+#include "gmock_main/gmock_main-export.h"
 #include "gtest/gtest.h"
 
 #if defined(GTEST_OS_ESP8266) || defined(GTEST_OS_ESP32) || \
@@ -59,9 +60,9 @@ void loop() { RUN_ALL_TESTS(); }
 #ifdef GTEST_OS_WINDOWS_MOBILE
 #include <tchar.h>  // NOLINT
 
-GTEST_API_ int _tmain(int argc, TCHAR** argv) {
+GMOCK_MAIN_EXPORT int _tmain(int argc, TCHAR** argv) {
 #else
-GTEST_API_ int main(int argc, char** argv) {
+GMOCK_MAIN_EXPORT int main(int argc, char** argv) {
 #endif  // GTEST_OS_WINDOWS_MOBILE
   std::cout << "Running main() from gmock_main.cc\n";
   // Since Google Mock depends on Google Test, InitGoogleMock() is

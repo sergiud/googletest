@@ -78,36 +78,36 @@ namespace internal {
 
 // The value of GetTestTypeId() as seen from within the Google Test
 // library.  This is solely for testing GetTestTypeId().
-GTEST_API_ extern const TypeId kTestTypeIdInGoogleTest;
+GTEST_EXPORT extern const TypeId kTestTypeIdInGoogleTest;
 
 // A valid random seed must be in [1, kMaxRandomSeed].
 const int kMaxRandomSeed = 99999;
 
 // g_help_flag is true if and only if the --help flag or an equivalent form
 // is specified on the command line.
-GTEST_API_ extern bool g_help_flag;
+GTEST_EXPORT extern bool g_help_flag;
 
 // Returns the current time in milliseconds.
-GTEST_API_ TimeInMillis GetTimeInMillis();
+GTEST_EXPORT TimeInMillis GetTimeInMillis();
 
 // Returns true if and only if Google Test should use colors in the output.
-GTEST_API_ bool ShouldUseColor(bool stdout_is_tty);
+GTEST_EXPORT bool ShouldUseColor(bool stdout_is_tty);
 
 // Formats the given time in milliseconds as seconds. If the input is an exact N
 // seconds, the output has a trailing decimal point (e.g., "N." instead of "N").
-GTEST_API_ std::string FormatTimeInMillisAsSeconds(TimeInMillis ms);
+GTEST_EXPORT std::string FormatTimeInMillisAsSeconds(TimeInMillis ms);
 
 // Converts the given time in milliseconds to a date string in the ISO 8601
 // format, without the timezone information.  N.B.: due to the use the
 // non-reentrant localtime() function, this function is not thread safe.  Do
 // not use it in any code that can be called from multiple threads.
-GTEST_API_ std::string FormatEpochTimeInMillisAsIso8601(TimeInMillis ms);
+GTEST_EXPORT std::string FormatEpochTimeInMillisAsIso8601(TimeInMillis ms);
 
 // Parses a string for an Int32 flag, in the form of "--flag=value".
 //
 // On success, stores the value of the flag in *value, and returns
 // true.  On failure, returns false without changing *value.
-GTEST_API_ bool ParseFlag(const char* str, const char* flag, int32_t* value);
+GTEST_EXPORT bool ParseFlag(const char* str, const char* flag, int32_t* value);
 
 // Returns a random seed in range [1, kMaxRandomSeed] based on the
 // given --gtest_random_seed flag value.
@@ -223,7 +223,7 @@ class GTestFlagSaver {
 // If the code_point is not a valid Unicode code point
 // (i.e. outside of Unicode range U+0 to U+10FFFF) it will be converted
 // to "(Invalid Unicode 0xXXXXXXXX)".
-GTEST_API_ std::string CodePointToUtf8(uint32_t code_point);
+GTEST_EXPORT std::string CodePointToUtf8(uint32_t code_point);
 
 // Converts a wide string to a narrow string in UTF-8 encoding.
 // The wide string is assumed to have the following encoding:
@@ -238,7 +238,7 @@ GTEST_API_ std::string CodePointToUtf8(uint32_t code_point);
 // as '(Invalid Unicode 0xXXXXXXXX)'. If the string is in UTF16 encoding
 // and contains invalid UTF-16 surrogate pairs, values in those pairs
 // will be encoded as individual Unicode characters from Basic Normal Plane.
-GTEST_API_ std::string WideStringToUtf8(const wchar_t* str, int num_chars);
+GTEST_EXPORT std::string WideStringToUtf8(const wchar_t* str, int num_chars);
 
 // Reads the GTEST_SHARD_STATUS_FILE environment variable, and creates the file
 // if the variable is present. If a file already exists at this location, this
@@ -252,21 +252,22 @@ void WriteToShardStatusFileIfNeeded();
 // an error and exits. If in_subprocess_for_death_test, sharding is
 // disabled because it must only be applied to the original test
 // process. Otherwise, we could filter out death tests we intended to execute.
-GTEST_API_ bool ShouldShard(const char* total_shards_str,
-                            const char* shard_index_str,
-                            bool in_subprocess_for_death_test);
+GTEST_EXPORT bool ShouldShard(const char* total_shards_str,
+                              const char* shard_index_str,
+                              bool in_subprocess_for_death_test);
 
 // Parses the environment variable var as a 32-bit integer. If it is unset,
 // returns default_val. If it is not a 32-bit integer, prints an error and
 // and aborts.
-GTEST_API_ int32_t Int32FromEnvOrDie(const char* env_var, int32_t default_val);
+GTEST_EXPORT int32_t Int32FromEnvOrDie(const char* env_var,
+                                       int32_t default_val);
 
 // Given the total number of shards, the shard index, and the test id,
 // returns true if and only if the test should be run on this shard. The test id
 // is some arbitrary but unique non-negative integer assigned to each test
 // method. Assumes that 0 <= shard_index < total_shards.
-GTEST_API_ bool ShouldRunTestOnShard(int total_shards, int shard_index,
-                                     int test_id);
+GTEST_EXPORT bool ShouldRunTestOnShard(int total_shards, int shard_index,
+                                       int test_id);
 
 // STL container utilities.
 
@@ -366,7 +367,7 @@ class TestPropertyKeyIs {
 // test filter using either GTEST_FILTER or --gtest_filter.  If both
 // the variable and the flag are present, the latter overrides the
 // former.
-class GTEST_API_ UnitTestOptions {
+class GTEST_EXPORT UnitTestOptions {
  public:
   // Functions for processing the gtest_output flag.
 
@@ -402,7 +403,7 @@ class GTEST_API_ UnitTestOptions {
 #if GTEST_HAS_FILE_SYSTEM
 // Returns the current application's name, removing directory path if that
 // is present.  Used by UnitTestOptions::GetOutputFile.
-GTEST_API_ FilePath GetCurrentExecutableName();
+GTEST_EXPORT FilePath GetCurrentExecutableName();
 #endif  // GTEST_HAS_FILE_SYSTEM
 
 // The role interface for getting the OS stack trace as a string.
@@ -506,7 +507,7 @@ class DefaultPerThreadTestPartResultReporter
 // the methods under a mutex, as this class is not accessible by a
 // user and the UnitTest class that delegates work to this class does
 // proper locking.
-class GTEST_API_ UnitTestImpl {
+class GTEST_EXPORT UnitTestImpl {
  public:
   explicit UnitTestImpl(UnitTest* parent);
   virtual ~UnitTestImpl();
@@ -987,33 +988,33 @@ inline UnitTestImpl* GetUnitTestImpl() {
 
 // Internal helper functions for implementing the simple regular
 // expression matcher.
-GTEST_API_ bool IsInSet(char ch, const char* str);
-GTEST_API_ bool IsAsciiDigit(char ch);
-GTEST_API_ bool IsAsciiPunct(char ch);
-GTEST_API_ bool IsRepeat(char ch);
-GTEST_API_ bool IsAsciiWhiteSpace(char ch);
-GTEST_API_ bool IsAsciiWordChar(char ch);
-GTEST_API_ bool IsValidEscape(char ch);
-GTEST_API_ bool AtomMatchesChar(bool escaped, char pattern, char ch);
-GTEST_API_ bool ValidateRegex(const char* regex);
-GTEST_API_ bool MatchRegexAtHead(const char* regex, const char* str);
-GTEST_API_ bool MatchRepetitionAndRegexAtHead(bool escaped, char ch,
-                                              char repeat, const char* regex,
-                                              const char* str);
-GTEST_API_ bool MatchRegexAnywhere(const char* regex, const char* str);
+GTEST_EXPORT bool IsInSet(char ch, const char* str);
+GTEST_EXPORT bool IsAsciiDigit(char ch);
+GTEST_EXPORT bool IsAsciiPunct(char ch);
+GTEST_EXPORT bool IsRepeat(char ch);
+GTEST_EXPORT bool IsAsciiWhiteSpace(char ch);
+GTEST_EXPORT bool IsAsciiWordChar(char ch);
+GTEST_EXPORT bool IsValidEscape(char ch);
+GTEST_EXPORT bool AtomMatchesChar(bool escaped, char pattern, char ch);
+GTEST_EXPORT bool ValidateRegex(const char* regex);
+GTEST_EXPORT bool MatchRegexAtHead(const char* regex, const char* str);
+GTEST_EXPORT bool MatchRepetitionAndRegexAtHead(bool escaped, char ch,
+                                                char repeat, const char* regex,
+                                                const char* str);
+GTEST_EXPORT bool MatchRegexAnywhere(const char* regex, const char* str);
 
 #endif  // GTEST_USES_SIMPLE_RE
 
 // Parses the command line for Google Test flags, without initializing
 // other parts of Google Test.
-GTEST_API_ void ParseGoogleTestFlagsOnly(int* argc, char** argv);
-GTEST_API_ void ParseGoogleTestFlagsOnly(int* argc, wchar_t** argv);
+GTEST_EXPORT void ParseGoogleTestFlagsOnly(int* argc, char** argv);
+GTEST_EXPORT void ParseGoogleTestFlagsOnly(int* argc, wchar_t** argv);
 
 #ifdef GTEST_HAS_DEATH_TEST
 
 // Returns the message describing the last system error, regardless of the
 // platform.
-GTEST_API_ std::string GetLastErrnoDescription();
+GTEST_EXPORT std::string GetLastErrnoDescription();
 
 // Attempts to parse a string into a positive integer pointed to by the
 // number parameter.  Returns true if that is possible.
