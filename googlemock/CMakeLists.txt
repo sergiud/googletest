@@ -49,7 +49,6 @@ endif()
 # if they are the same (the default).
 add_subdirectory("${gtest_dir}" "${gmock_BINARY_DIR}/${gtest_dir}")
 
-
 # These commands only run if this is the main project
 if(CMAKE_PROJECT_NAME STREQUAL "gmock" OR CMAKE_PROJECT_NAME STREQUAL "googletest-distribution")
   # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
@@ -86,6 +85,7 @@ add_library (gmock_internal OBJECT
   src/gmock-spec-builders.cc
   src/gmock.cc
 )
+target_compile_definitions(gmock_internal PRIVATE gtest_EXPORTS)
 set_target_properties(gmock_internal PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(gmock_internal PRIVATE
   $<TARGET_PROPERTY:gtest,INCLUDE_DIRECTORIES>)
@@ -107,6 +107,7 @@ set_target_properties(gmock PROPERTIES VERSION ${GOOGLETEST_VERSION})
 set_target_properties(gmock PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 cxx_library(gmock_main "${cxx_strict}" src/gmock_main.cc)
 target_link_libraries(gmock_main PUBLIC gmock)
+set_target_properties(gmock_main PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 set_target_properties(gmock_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
 
 string(REPLACE ";" "$<SEMICOLON>" dirs "${gmock_build_include_dirs}")
@@ -116,6 +117,8 @@ target_include_directories(gmock SYSTEM INTERFACE
 target_include_directories(gmock_main SYSTEM INTERFACE
   "$<BUILD_INTERFACE:${dirs}>"
   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
+
+target_link_libraries (gmock PUBLIC gtest)
 
 ########################################################################
 #
@@ -161,6 +164,9 @@ if (gmock_build_tests)
   cxx_test(gmock_link_test gmock_main test/gmock_link2_test.cc)
   cxx_test(gmock_test gmock_main)
 
+  target_sources(gmock-internal-utils_test PRIVATE $<TARGET_OBJECTS:gmock_internal>)
+  target_sources(gmock-matchers-comparisons_test PRIVATE $<TARGET_OBJECTS:gmock_internal>)
+
   if (DEFINED GTEST_HAS_PTHREAD)
     cxx_test(gmock_stress_test gmock)
   endif()
@@ -173,9 +179,11 @@ if (gmock_build_tests)
   # C++ tests built with non-standard compiler flags.
 
   cxx_library(gmock_main_no_exception "${cxx_no_exception}" src/gmock_main.cc)
+  set_target_properties(gmock_main_no_exception PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
   target_link_libraries(gmock_main_no_exception PRIVATE gmock)
 
   cxx_library(gmock_main_no_rtti "${cxx_no_rtti}" src/gmock_main.cc)
+  set_target_properties(gmock_main_no_rtti PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
   target_link_libraries(gmock_main_no_rtti PRIVATE gmock)
 
   cxx_test_with_flags(gmock-more-actions_no_exception_test "${cxx_no_exception}"
@@ -188,6 +196,7 @@ if (gmock_build_tests)
 
   cxx_shared_library(shared_gmock_main "${cxx_default}"
     src/gmock_main.cc)
+
   target_link_libraries (shared_gmock_main PUBLIC gtest)
 
   # Tests that a binary can be built with Google Mock as a shared library. On
