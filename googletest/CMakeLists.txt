@@ -21,11 +21,6 @@ option(gtest_build_samples "Build gtest's sample programs." OFF)
 
 option(gtest_disable_pthreads "Disable uses of pthreads in gtest." OFF)
 
-option(
-  gtest_hide_internal_symbols
-  "Build gtest with internal symbols hidden in shared libraries."
-  OFF)
-
 # Defines pre_project_set_up_hermetic_build() and set_up_hermetic_build().
 include(cmake/hermetic_build.cmake OPTIONAL)
 
@@ -69,12 +64,6 @@ else()
     gtest_disable_pthreads
     gtest_hide_internal_symbols)
 
-endif()
-
-
-if (gtest_hide_internal_symbols)
-  set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-  set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 endif()
 
 # Define helper functions and macros used by Google Test.
