@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.16)
 project(googletest-distribution)
 set(GOOGLETEST_VERSION 1.16.0)
 
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+
 if(NOT CYGWIN AND NOT MSYS AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL QNX)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
@@ -14,6 +16,7 @@ enable_testing()
 
 include(CMakeDependentOption)
 include(GNUInstallDirs)
+include(GenerateExportHeader)
 
 # Note that googlemock target already builds googletest.
 option(BUILD_GMOCK "Builds the googlemock subproject" ON)

@@ -109,15 +109,13 @@ endif()
 # Where Google Test's .h files can be found.
 set(gtest_build_include_dirs
   "${gtest_SOURCE_DIR}/include"
-  "${gtest_SOURCE_DIR}")
+  "${gtest_SOURCE_DIR}"
+  "${gtest_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}"
+)
 include_directories(${gtest_build_include_dirs})
 
-########################################################################
-#
-# Defines the gtest & gtest_main libraries. User tests should link
-# with one of them.
-
-set (gtest_ALL_SRCS
+add_library (gtest_internal OBJECT
+  src/gtest.cc
   src/gtest-assertion-result.cc
   src/gtest-death-test.cc
   src/gtest-filepath.cc
@@ -126,7 +124,17 @@ set (gtest_ALL_SRCS
   src/gtest-printers.cc
   src/gtest-test-part.cc
   src/gtest-typed-test.cc
-  src/gtest.cc
+)
+target_compile_definitions(gtest_internal PRIVATE gtest_EXPORTS)
+set_target_properties(gtest_internal PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+########################################################################
+#
+# Defines the gtest & gtest_main libraries.  User tests should link
+# with one of them.
+
+set (gtest_ALL_SRCS
+  $<TARGET_OBJECTS:gtest_internal>
 )
 
 # Google Test libraries. We build them using more strict warnings than what
@@ -160,7 +168,22 @@ target_include_directories(gtest_main SYSTEM INTERFACE
 if(CMAKE_SYSTEM_NAME MATCHES "QNX" AND CMAKE_SYSTEM_VERSION VERSION_GREATER_EQUAL 7.1)
   target_link_libraries(gtest PUBLIC regex)
 endif()
+
 target_link_libraries(gtest_main PUBLIC gtest)
+
+generate_export_header (gtest
+  EXPORT_FILE_NAME ${gtest_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/gtest/gtest-export.h
+  EXPORT_MACRO_NAME GTEST_API_
+)
+
+target_include_directories (gtest PUBLIC
+  $<BUILD_INTERFACE:${gtest_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+install (DIRECTORY ${gtest_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}
+ DESTINATION .
+ FILES_MATCHING PATTERN *.h
+)
 
 ########################################################################
 #
@@ -236,6 +259,8 @@ if (gtest_build_tests)
   cxx_test(gtest_skip_in_environment_setup_test gtest_main)
   cxx_test(gtest_skip_test gtest_main)
 
+  target_sources(gtest_unittest PRIVATE $<TARGET_OBJECTS:gtest_internal>)
+
   ############################################################
   # C++ tests built with non-standard compiler flags.
 
@@ -258,12 +283,14 @@ if (gtest_build_tests)
 
   cxx_test_with_flags(gtest_no_rtti_unittest "${cxx_no_rtti}"
     gtest_main_no_rtti test/gtest_unittest.cc)
+  target_sources(gtest_no_rtti_unittest PRIVATE $<TARGET_OBJECTS:gtest_internal>)
 
   cxx_shared_library(gtest_dll "${cxx_default}"
     ${gtest_ALL_SRCS} src/gtest_main.cc)
 
   cxx_executable_with_flags(gtest_dll_test_ "${cxx_default}"
     gtest_dll test/gtest_all_test.cc)
+  target_sources(gtest_dll_test_ PRIVATE $<TARGET_OBJECTS:gtest_internal>)
   set_target_properties(gtest_dll_test_
                         PROPERTIES
                         COMPILE_DEFINITIONS "GTEST_LINKED_AS_SHARED_LIBRARY=1")
@@ -303,6 +330,7 @@ if (gtest_build_tests)
   py_test(googletest-filter-unittest)
 
   cxx_executable(gtest_help_test_ test gtest_main)
+  target_sources(gtest_help_test_ PRIVATE $<TARGET_OBJECTS:gtest_internal>)
   py_test(gtest_help_test)
 
   cxx_executable(googletest-list-tests-unittest_ test gtest)

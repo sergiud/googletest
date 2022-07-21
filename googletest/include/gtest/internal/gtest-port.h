@@ -821,15 +821,7 @@ typedef struct _RTL_CRITICAL_SECTION GTEST_CRITICAL_SECTION;
 // gtest/internal/custom/gtest-port.h
 #ifndef GTEST_API_
 
-#ifdef _MSC_VER
-#if defined(GTEST_LINKED_AS_SHARED_LIBRARY) && GTEST_LINKED_AS_SHARED_LIBRARY
-#define GTEST_API_ __declspec(dllimport)
-#elif defined(GTEST_CREATE_SHARED_LIBRARY) && GTEST_CREATE_SHARED_LIBRARY
-#define GTEST_API_ __declspec(dllexport)
-#endif
-#elif GTEST_HAVE_ATTRIBUTE_(visibility)
-#define GTEST_API_ __attribute__((visibility("default")))
-#endif  // _MSC_VER
+#include <gtest/gtest-export.h>
 
 #endif  // GTEST_API_
 
