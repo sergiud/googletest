@@ -263,7 +263,7 @@ if (gtest_build_tests)
   cxx_test(gtest_throw_on_failure_ex_test gtest)
   cxx_test(gtest-typed-test_test gtest_main
     test/gtest-typed-test2_test.cc)
-  cxx_test(gtest_unittest gtest_main)
+  cxx_test(gtest_unittest gtest_main $<TARGET_OBJECTS:gtest_internal>)
   cxx_test(gtest-unittest-api_test gtest)
   cxx_test(gtest_skip_in_environment_setup_test gtest_main)
   cxx_test(gtest_skip_test gtest_main)
@@ -280,7 +280,7 @@ if (gtest_build_tests)
     set_target_properties(gtest_main_no_exception PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
   endif()
   cxx_library(gtest_main_no_rtti "${cxx_no_rtti}"
-    ${gtest_ALL_SRCS} src/gtest_main.cc)
+    ${gtest_ALL_SRCS} src/gtest_main.cc $<TARGET_OBJECTS:gtest_internal>)
   set_target_properties(gtest_main_no_rtti PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 
   cxx_test_with_flags(gtest-death-test_ex_nocatch_test
@@ -291,17 +291,14 @@ if (gtest_build_tests)
     gtest test/googletest-death-test_ex_test.cc)
 
   cxx_test_with_flags(gtest_no_rtti_unittest "${cxx_no_rtti}"
-    gtest_main_no_rtti test/gtest_unittest.cc)
+    gtest_main_no_rtti test/gtest_unittest.cc $<TARGET_OBJECTS:gtest_internal>)
 
   cxx_shared_library(gtest_dll "${cxx_default}"
     ${gtest_ALL_SRCS} src/gtest_main.cc)
   set_target_properties(gtest_dll PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 
   cxx_executable_with_flags(gtest_dll_test_ "${cxx_default}"
-    gtest_dll test/gtest_all_test.cc)
-  set_target_properties(gtest_dll_test_
-                        PROPERTIES
-                        COMPILE_DEFINITIONS "GTEST_LINKED_AS_SHARED_LIBRARY=1")
+    gtest_dll test/gtest_all_test.cc $<TARGET_OBJECTS:gtest_internal>)
 
   ############################################################
   # Python tests.
