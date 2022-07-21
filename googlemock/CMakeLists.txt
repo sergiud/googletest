@@ -70,7 +70,7 @@ get_target_property(gtest_include_dirs gtest INCLUDE_DIRECTORIES)
 set(gmock_build_include_dirs
   "${gmock_SOURCE_DIR}/include"
   "${gmock_SOURCE_DIR}"
-  "${gtest_include_dirs}")
+  ${gmock_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
 include_directories(${gmock_build_include_dirs})
 
 ########################################################################
@@ -85,7 +85,7 @@ add_library (gmock_internal OBJECT
   src/gmock-spec-builders.cc
   src/gmock.cc
 )
-target_compile_definitions(gmock_internal PRIVATE gtest_EXPORTS)
+target_compile_definitions(gmock_internal PRIVATE gmock_EXPORTS)
 set_target_properties(gmock_internal PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(gmock_internal PRIVATE
   $<TARGET_PROPERTY:gmock,INCLUDE_DIRECTORIES>)
@@ -104,10 +104,9 @@ cxx_library(gmock "${cxx_strict}"
 )
 target_link_libraries(gmock PUBLIC gtest)
 set_target_properties(gmock PROPERTIES VERSION ${GOOGLETEST_VERSION})
-set_target_properties(gmock PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
+set_target_properties(gmock PROPERTIES DEFINE_SYMBOL gmock_EXPORTS)
 cxx_library(gmock_main "${cxx_strict}" src/gmock_main.cc)
 target_link_libraries(gmock_main PUBLIC gmock)
-set_target_properties(gmock_main PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 set_target_properties(gmock_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
 
 string(REPLACE ";" "$<SEMICOLON>" dirs "${gmock_build_include_dirs}")
@@ -119,6 +118,25 @@ target_include_directories(gmock_main SYSTEM INTERFACE
   "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
 
 target_link_libraries (gmock PUBLIC gtest)
+
+generate_export_header (gmock
+  EXPORT_FILE_NAME ${gmock_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}/gmock/gmock-export.h
+)
+
+generate_export_header (gmock_main
+  EXPORT_FILE_NAME ${gmock_BINARY_DIR}/gmock_main/gmock_main-export.h
+)
+
+target_include_directories (gmock_main PRIVATE ${gmock_BINARY_DIR})
+
+target_include_directories (gmock PUBLIC
+  $<BUILD_INTERFACE:${gmock_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+install (DIRECTORY ${gmock_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR}
+ DESTINATION .
+ FILES_MATCHING PATTERN *.h
+)
 
 ########################################################################
 #
@@ -179,11 +197,13 @@ if (gmock_build_tests)
   # C++ tests built with non-standard compiler flags.
 
   cxx_library(gmock_main_no_exception "${cxx_no_exception}" src/gmock_main.cc)
-  set_target_properties(gmock_main_no_exception PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
+  target_include_directories (gmock_main_no_exception PRIVATE ${gmock_BINARY_DIR})
+  set_target_properties (gmock_main_no_exception PROPERTIES DEFINE_SYMBOL gmock_main_EXPORTS)
   target_link_libraries(gmock_main_no_exception PRIVATE gmock)
 
   cxx_library(gmock_main_no_rtti "${cxx_no_rtti}" src/gmock_main.cc)
-  set_target_properties(gmock_main_no_rtti PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
+  target_include_directories (gmock_main_no_rtti PRIVATE ${gmock_BINARY_DIR})
+  set_target_properties (gmock_main_no_rtti PROPERTIES DEFINE_SYMBOL gmock_main_EXPORTS)
   target_link_libraries(gmock_main_no_rtti PRIVATE gmock)
 
   cxx_test_with_flags(gmock-more-actions_no_exception_test "${cxx_no_exception}"
@@ -196,6 +216,8 @@ if (gmock_build_tests)
 
   cxx_shared_library(shared_gmock_main "${cxx_default}"
     src/gmock_main.cc)
+  set_target_properties (shared_gmock_main PROPERTIES DEFINE_SYMBOL gmock_main_EXPORTS)
+  target_include_directories (shared_gmock_main PRIVATE ${gmock_BINARY_DIR})
 
   target_link_libraries (shared_gmock_main PUBLIC gtest)
 

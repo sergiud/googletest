@@ -98,7 +98,7 @@ namespace testing {
 // latter (it causes an access violation if you do).  The Message
 // class hides this difference by treating a NULL char pointer as
 // "(null)".
-class GTEST_API_ Message {
+class GTEST_EXPORT Message {
  private:
   // The type of basic IO manipulators (endl, ends, and flush) for
   // narrow streams.

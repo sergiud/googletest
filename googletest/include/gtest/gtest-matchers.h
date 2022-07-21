@@ -111,7 +111,7 @@ inline MatchResultListener::~MatchResultListener() = default;
 
 // An instance of a subclass of this knows how to describe itself as a
 // matcher.
-class GTEST_API_ MatcherDescriberInterface {
+class GTEST_EXPORT MatcherDescriberInterface {
  public:
   virtual ~MatcherDescriberInterface() = default;
 
@@ -491,7 +491,7 @@ class Matcher : public internal::MatcherBase<T> {
 // instead of Eq(str) and "foo" instead of Eq("foo") when a std::string
 // matcher is expected.
 template <>
-class GTEST_API_ Matcher<const std::string&>
+class GTEST_EXPORT Matcher<const std::string&>
     : public internal::MatcherBase<const std::string&> {
  public:
   Matcher() = default;
@@ -513,7 +513,7 @@ class GTEST_API_ Matcher<const std::string&>
 };
 
 template <>
-class GTEST_API_ Matcher<std::string>
+class GTEST_EXPORT Matcher<std::string>
     : public internal::MatcherBase<std::string> {
  public:
   Matcher() = default;
@@ -541,7 +541,7 @@ class GTEST_API_ Matcher<std::string>
 // instead of Eq(str) and "foo" instead of Eq("foo") when a absl::string_view
 // matcher is expected.
 template <>
-class GTEST_API_ Matcher<const internal::StringView&>
+class GTEST_EXPORT Matcher<const internal::StringView&>
     : public internal::MatcherBase<const internal::StringView&> {
  public:
   Matcher() = default;
@@ -567,7 +567,7 @@ class GTEST_API_ Matcher<const internal::StringView&>
 };
 
 template <>
-class GTEST_API_ Matcher<internal::StringView>
+class GTEST_EXPORT Matcher<internal::StringView>
     : public internal::MatcherBase<internal::StringView> {
  public:
   Matcher() = default;

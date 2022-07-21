@@ -60,7 +60,7 @@ namespace internal {
 // Valgrind heap checkers may need this to modify their behavior in death
 // tests.  IMPORTANT: This is an internal utility.  Using it may break the
 // implementation of death tests.  User code MUST NOT use it.
-GTEST_API_ bool InDeathTestChild();
+GTEST_EXPORT bool InDeathTestChild();
 
 }  // namespace internal
 
@@ -192,7 +192,7 @@ GTEST_API_ bool InDeathTestChild();
 // Two predicate classes that can be used in {ASSERT,EXPECT}_EXIT*:
 
 // Tests that an exit code describes a normal exit with a given exit code.
-class GTEST_API_ ExitedWithCode {
+class GTEST_EXPORT ExitedWithCode {
  public:
   explicit ExitedWithCode(int exit_code);
   ExitedWithCode(const ExitedWithCode&) = default;
@@ -206,7 +206,7 @@ class GTEST_API_ ExitedWithCode {
 #if !defined(GTEST_OS_WINDOWS) && !defined(GTEST_OS_FUCHSIA)
 // Tests that an exit code describes an exit due to termination by a
 // given signal.
-class GTEST_API_ KilledBySignal {
+class GTEST_EXPORT KilledBySignal {
  public:
   explicit KilledBySignal(int signum);
   bool operator()(int exit_status) const;
