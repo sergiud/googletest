@@ -88,13 +88,13 @@ add_library (gmock_internal OBJECT
 target_compile_definitions(gmock_internal PRIVATE gtest_EXPORTS)
 set_target_properties(gmock_internal PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(gmock_internal PRIVATE
-  $<TARGET_PROPERTY:gtest,INCLUDE_DIRECTORIES>)
+  $<TARGET_PROPERTY:gmock,INCLUDE_DIRECTORIES>)
 target_compile_definitions(gmock_internal PRIVATE
-  $<TARGET_PROPERTY:gtest,COMPILE_DEFINITIONS>)
+  $<TARGET_PROPERTY:gmock,COMPILE_DEFINITIONS>)
 target_compile_options(gmock_internal PRIVATE
-  $<TARGET_PROPERTY:gtest,COMPILE_OPTIONS>)
+  $<TARGET_PROPERTY:gmock,COMPILE_OPTIONS>)
 target_compile_features(gmock_internal PRIVATE
-  $<TARGET_PROPERTY:gtest,COMPILE_FEATURES>)
+  $<TARGET_PROPERTY:gmock,COMPILE_FEATURES>)
 
 # Google Mock libraries. We build them using more strict warnings than what
 # are used for other targets, to ensure that Google Mock can be compiled by
