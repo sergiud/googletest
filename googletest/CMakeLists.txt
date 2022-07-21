@@ -155,7 +155,6 @@ if(GTEST_HAS_ABSL)
   )
 endif()
 cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
-set_target_properties(gtest_main PROPERTIES DEFINE_SYMBOL gtest_EXPORTS)
 set_target_properties(gtest_main PROPERTIES VERSION ${GOOGLETEST_VERSION})
 target_link_libraries(gtest_main PUBLIC gtest)
 string(REPLACE ";" "$<SEMICOLON>" dirs "${gtest_build_include_dirs}")
@@ -258,7 +257,7 @@ if (gtest_build_tests)
   cxx_test(gtest_throw_on_failure_ex_test gtest)
   cxx_test(gtest-typed-test_test gtest_main
     test/gtest-typed-test2_test.cc)
-  cxx_test(gtest_unittest gtest_main $<TARGET_OBJECTS:gtest_internal>)
+  cxx_test(gtest_unittest gtest_main)
   cxx_test(gtest-unittest-api_test gtest)
   cxx_test(gtest_skip_in_environment_setup_test gtest_main)
   cxx_test(gtest_skip_test gtest_main)
@@ -276,7 +275,7 @@ if (gtest_build_tests)
     target_include_directories (gtest_main_no_exception PRIVATE ${gtest_BINARY_DIR})
   endif()
   cxx_library(gtest_main_no_rtti "${cxx_no_rtti}"
-    ${gtest_ALL_SRCS} src/gtest_main.cc $<TARGET_OBJECTS:gtest_internal>)
+    ${gtest_ALL_SRCS} src/gtest_main.cc)
   set_target_properties(gtest_main_no_rtti PROPERTIES DEFINE_SYMBOL gtest_main_EXPORTS)
   target_include_directories (gtest_main_no_rtti PRIVATE ${gtest_BINARY_DIR})
 
@@ -288,7 +287,7 @@ if (gtest_build_tests)
     gtest test/googletest-death-test_ex_test.cc)
 
   cxx_test_with_flags(gtest_no_rtti_unittest "${cxx_no_rtti}"
-    gtest_main_no_rtti test/gtest_unittest.cc $<TARGET_OBJECTS:gtest_internal>)
+    gtest_main_no_rtti test/gtest_unittest.cc)
 
   cxx_shared_library(gtest_dll "${cxx_default}"
     ${gtest_ALL_SRCS} src/gtest_main.cc)
@@ -296,7 +295,7 @@ if (gtest_build_tests)
   target_include_directories (gtest_dll PRIVATE ${gtest_BINARY_DIR})
 
   cxx_executable_with_flags(gtest_dll_test_ "${cxx_default}"
-    gtest_dll test/gtest_all_test.cc $<TARGET_OBJECTS:gtest_internal>)
+    gtest_dll test/gtest_all_test.cc)
 
   ############################################################
   # Python tests.
