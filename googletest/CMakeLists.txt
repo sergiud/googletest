@@ -103,15 +103,21 @@ set(gtest_build_include_dirs
 )
 include_directories(${gtest_build_include_dirs})
 
-add_library (gtest_internal OBJECT
+add_library (gtest_shared OBJECT
   src/gtest.cc
-  src/gtest-assertion-result.cc
-  src/gtest-death-test.cc
-  src/gtest-filepath.cc
-  src/gtest-matchers.cc
   src/gtest-port.cc
   src/gtest-printers.cc
+  src/gtest-death-test.cc
   src/gtest-test-part.cc
+)
+
+target_compile_definitions(gtest_shared PRIVATE gtest_EXPORTS)
+set_target_properties(gtest_shared PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+add_library (gtest_internal OBJECT
+  src/gtest-assertion-result.cc
+  src/gtest-filepath.cc
+  src/gtest-matchers.cc
   src/gtest-typed-test.cc
 )
 
@@ -133,6 +139,7 @@ target_compile_features(gtest_internal PRIVATE
 
 set (gtest_ALL_SRCS
   $<TARGET_OBJECTS:gtest_internal>
+  $<TARGET_OBJECTS:gtest_shared>
 )
 
 # Google Test libraries. We build them using more strict warnings than what
@@ -257,7 +264,7 @@ if (gtest_build_tests)
   cxx_test(gtest_throw_on_failure_ex_test gtest)
   cxx_test(gtest-typed-test_test gtest_main
     test/gtest-typed-test2_test.cc)
-  cxx_test(gtest_unittest gtest_main)
+  cxx_test(gtest_unittest gtest_main $<TARGET_OBJECTS:gtest_shared>)
   cxx_test(gtest-unittest-api_test gtest)
   cxx_test(gtest_skip_in_environment_setup_test gtest_main)
   cxx_test(gtest_skip_test gtest_main)
@@ -287,7 +294,7 @@ if (gtest_build_tests)
     gtest test/googletest-death-test_ex_test.cc)
 
   cxx_test_with_flags(gtest_no_rtti_unittest "${cxx_no_rtti}"
-    gtest_main_no_rtti test/gtest_unittest.cc)
+    gtest_main_no_rtti test/gtest_unittest.cc $<TARGET_OBJECTS:gtest_shared>)
 
   cxx_shared_library(gtest_dll "${cxx_default}"
     ${gtest_ALL_SRCS} src/gtest_main.cc)
@@ -295,7 +302,7 @@ if (gtest_build_tests)
   target_include_directories (gtest_dll PRIVATE ${gtest_BINARY_DIR})
 
   cxx_executable_with_flags(gtest_dll_test_ "${cxx_default}"
-    gtest_dll test/gtest_all_test.cc)
+    gtest_dll test/gtest_all_test.cc $<TARGET_OBJECTS:gtest_shared>)
 
   ############################################################
   # Python tests.
