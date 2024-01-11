@@ -2238,7 +2238,7 @@ GTEST_EXPORT std::string TempDir();
 // be used by tests. It is implementation dependent whether or not the path is
 // terminated by the directory-separator character. The directory and the files
 // in it should be considered read-only.
-GTEST_API_ std::string SrcDir();
+GTEST_EXPORT std::string SrcDir();
 
 GTEST_DISABLE_MSC_WARNINGS_POP_()  // 4805 4100
 
